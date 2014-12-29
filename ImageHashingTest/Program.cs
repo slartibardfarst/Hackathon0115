@@ -12,9 +12,9 @@ namespace ImageHashingTest
         //public static string diff_1 = "diff1.jpg";
         //public static string same_1 = "same1.jpg";  // My original test has same_1 and same_2 as the same image
         //public static string same_2 = "same2.jpg";  // at different resolutions, so similarity = 100%
-        public static string same_1 = @"C:\dev\github\ImageHashing\img1.jpg";  // My original test has same_1 and same_2 as the same image
-        public static string same_2 = @"C:\dev\github\ImageHashing\img2.jpg";  // at different resolutions, so similarity = 100%
-        public static string diff_1 = @"C:\dev\github\ImageHashing\img3.jpg";
+        public static string same_1 = @"..\..\..\img1.jpg";  // My original test has same_1 and same_2 as the same image
+        public static string same_2 = @"..\..\..\img2.jpg";  // at different resolutions, so similarity = 100%
+        public static string diff_1 = @"..\..\..\img3.jpg";
 
         static void Main(string[] args)
         {
