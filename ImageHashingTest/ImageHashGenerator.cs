@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using SDS.Providers.MPRRouter;
 
@@ -44,7 +45,10 @@ namespace ImageHashingTest
         {
             try
             {
-                imageDetails.ImageHash = GetHashFromUrl(imageDetails.ImageUrl);
+                var originalImageUrl = Regex.Replace(imageDetails.ImageUrl, "(.*)(s)(.jpg)$", "$1O$3");
+
+                imageDetails.ImageUrl = originalImageUrl;
+                imageDetails.ImageHash = GetHashFromUrl(originalImageUrl);
                 _dataDestRepo.UpsertListingImageDetails(3, "[MasterPropertyRecord].[dbo].[zzz_hackathon_0115_image_hashes]", imageDetails);
             }
             catch (Exception ex)

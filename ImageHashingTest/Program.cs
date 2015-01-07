@@ -15,10 +15,10 @@ namespace ImageHashingTest
 
         static void Main(string[] args)
         {
-            Testit();
+            //Testit();
 
-            //var hashGenerator = new ImageHashGenerator();
-            //hashGenerator.Go();
+            var hashGenerator = new ImageHashGenerator();
+            hashGenerator.Go();
         }
 
         private static void Testit()
@@ -45,8 +45,8 @@ namespace ImageHashingTest
 
             var x = ImageHashing.ImageHashing.AverageHash(new Uri("http://r.rdcpix.com/v01/l2e681455-r0o.jpg"));
 
-            Uri uriA = new Uri("http://r.rdcpix.com/v02/c14810600-r26s.jpg");
-            Uri uriB = new Uri("http://r.rdcpix.com/v01/c9df70500-r38s.jpg");
+            Uri uriA = new Uri("http://r.rdcpix.com/v02/c14810600-r26o.jpg");
+            Uri uriB = new Uri("http://r.rdcpix.com/v01/c14810600-r28o.jpg");
 
             var aa = ImageHashing.ImageHashing.AverageHash(uriA);
             var bb = ImageHashing.ImageHashing.AverageHash(uriB);
