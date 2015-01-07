@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using System.Threading;
 using ImageHashing;
 
 namespace ImageHashingTest
@@ -15,10 +15,10 @@ namespace ImageHashingTest
 
         static void Main(string[] args)
         {
-            //Testit();
+            Testit();
 
-            var hashGenerator = new ImageHashGenerator();
-            hashGenerator.Go();
+            //var hashGenerator = new ImageHashGenerator();
+            //hashGenerator.Go();
         }
 
         private static void Testit()
@@ -33,6 +33,8 @@ namespace ImageHashingTest
             var d = @"..\..\..\l79f31455-r0xd-w640_h480_q80_fliphoriz.jpg";
             var e = @"..\..\..\l79f31455-r0xd-w640_h480_q80_rr.jpg";
 
+
+
             //Console.WriteLine(String.Format("Similarity, diff-same: {0}", ImageHashing.ImageHashing.Similarity(diff_1, same_1)));
             //Console.WriteLine(String.Format("Similarity, same-same: {0}", ImageHashing.ImageHashing.Similarity(same_1, same_2)));
             Console.WriteLine(String.Format("Similarity, same-same: {0}", ImageHashing.ImageHashing.Similarity(a, b)));
@@ -43,8 +45,11 @@ namespace ImageHashingTest
 
             var x = ImageHashing.ImageHashing.AverageHash(new Uri("http://r.rdcpix.com/v01/l2e681455-r0o.jpg"));
 
-            Uri uriA = new Uri("http://r.rdcpix.com/v01/l2e681455-r0s.jpg");
-            Uri uriB = new Uri("http://r.rdcpix.com/v01/l2e681455-r0o.jpg");
+            Uri uriA = new Uri("http://r.rdcpix.com/v02/c14810600-r26s.jpg");
+            Uri uriB = new Uri("http://r.rdcpix.com/v01/c9df70500-r38s.jpg");
+
+            var aa = ImageHashing.ImageHashing.AverageHash(uriA);
+            var bb = ImageHashing.ImageHashing.AverageHash(uriB);
             var diff = ImageHashing.ImageHashing.Similarity(uriA, uriB);
         }
     }
