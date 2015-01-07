@@ -17,7 +17,7 @@ namespace ImageHashingTest
             _mprRedirect = dataSourceMprRedirect;
         }
 
-        internal IEnumerable<ListingImageDetails> QueryListingImages(int partitionId, string queryPrefix, string whereClause)
+        internal IEnumerable<ListingImageDetails> QueryListingImages(int partitionId, int max, string queryPrefix, string whereClause)
         {
             queryPrefix = string.IsNullOrEmpty(queryPrefix) ? "" : queryPrefix;
             whereClause = string.IsNullOrEmpty(whereClause) ? "" : whereClause;
@@ -38,11 +38,11 @@ namespace ImageHashingTest
                             join property.dataagg.master_listings ml (NOLOCK) on ml.listing_id = l.listing_id 
                             left outer join property.dataagg.listing_display_address lda (NOLOCK) on lda.listing_id = l.listing_id and lda.state_code = l.state_code
                             WHERE l.listing_id IN (
-	                            SELECT TOP 1 l.listing_id 
+	                            SELECT TOP {1} l.listing_id 
 	                            FROM Property.dataagg.listings l WITH(NOLOCK)
-                                {1} )";
+                                {2} )";
 
-            string sql = string.Format(sqlTemplate, queryPrefix, whereClause);
+            string sql = string.Format(sqlTemplate, queryPrefix, max, whereClause);
             string connectionString = _mprRedirect.GetConnectionStringByPartitionId(partitionId, "property");
             using (var dbConnection = new SqlConnection(connectionString))
             {
@@ -53,9 +53,78 @@ namespace ImageHashingTest
             }
         }
 
-        internal void UpsertListingImageDetails(int partitionId, ListingImageDetails image)
+        internal void UpsertListingImageDetails(int partitionId, string tableName, ListingImageDetails image)
         {
-            throw new NotImplementedException();
+            const string updateSqlTemplate = @"BEGIN TRAN
+                                               UPDATE   {0}
+                                               SET 
+                                                        [mpr_id]	        = @mpr_id,
+                                                        [master_listing_id] = @master_listing_id,
+	                                                    [listing_id]	    = @listing_id,
+	                                                    [image_url]		    = @image_url,
+	                                                    [image_hash]	    = @image_hash,
+	                                                    [address_line]	    = @address_line,
+	                                                    [city]              = @city,
+	                                                    [state]		        = @state,
+	                                                    [zip]			    = @zip
+                                               WHERE listing_id         = @listing_id AND
+                                                     state              = @state AND
+                                                     image_url          = @image_url
+                                               IF @@ROWCOUNT = 0
+                                               BEGIN
+                                                  INSERT INTO {0}
+                                                  (
+                                                        [mpr_id]	       ,
+                                                        [master_listing_id],
+	                                                    [listing_id]	   ,
+	                                                    [image_url]		   ,
+	                                                    [image_hash]	   ,
+	                                                    [address_line]	   ,
+	                                                    [city]             ,
+	                                                    [state]		       ,
+	                                                    [zip]			   
+                                                  )
+                                                  VALUES
+                                                  (
+                                                        @mpr_id,
+                                                        @master_listing_id,
+                                                        @listing_id,
+	                                                    @image_url,
+	                                                    @image_hash,
+	                                                    @address_line,
+	                                                    @city,
+	                                                    @state,
+	                                                    @zip
+                                                   )
+                                               END
+                                            COMMIT TRAN";
+
+            try
+            {
+                string connectionString = _mprRedirect.GetConnectionStringByPartitionId(partitionId, "MasterPropertyRecord");
+                using (var dbConnection = new SqlConnection(connectionString))
+                {
+                    dbConnection.Open();
+                    string sql = string.Format(updateSqlTemplate, tableName);
+                    SqlCommand cmd = new SqlCommand(sql, dbConnection);
+
+                    cmd.Parameters.AddWithValue("mpr_id", image.MprId);
+                    cmd.Parameters.AddWithValue("master_listing_id", image.MlId);
+                    cmd.Parameters.AddWithValue("listing_id", image.ListingId);
+                    cmd.Parameters.AddWithValue("image_url", ((object)image.ImageUrl) ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("image_hash", (decimal) image.ImageHash);
+                    cmd.Parameters.AddWithValue("address_line", ((object)image.AddressLine) ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("city", ((object)image.City) ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("state", ((object)image.State) ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("zip", ((object)image.Zip) ?? DBNull.Value);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
     }
 }
