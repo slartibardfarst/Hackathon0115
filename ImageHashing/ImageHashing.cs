@@ -2,6 +2,8 @@
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.IO;
+using System.Net;
 
 namespace ImageHashing
 {
@@ -90,6 +92,15 @@ namespace ImageHashing
             return hash;
         }
 
+        public static ulong AverageHash(Uri imageUrl)
+        {
+            WebRequest request = System.Net.WebRequest.Create(imageUrl);
+            WebResponse response = request.GetResponse();
+            Stream responseStream = response.GetResponseStream();
+            Bitmap bmp = new Bitmap(responseStream);
+            return AverageHash(bmp);
+        }
+
         /// <summary>
         /// Computes the average hash of the image content in the given file.
         /// </summary>
@@ -138,6 +149,13 @@ namespace ImageHashing
         {
             ulong hash1 = AverageHash(path1);
             ulong hash2 = AverageHash(path2);
+            return Similarity(hash1, hash2);
+        }
+
+        public static double Similarity(Uri uriA, Uri uriB)
+        {
+            ulong hash1 = AverageHash(uriA);
+            ulong hash2 = AverageHash(uriB);
             return Similarity(hash1, hash2);
         }
         #endregion
