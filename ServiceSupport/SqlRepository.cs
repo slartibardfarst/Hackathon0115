@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using Dapper;
 using SDS.Providers.MPRRouter;
+using ServiceSupport;
 
 namespace ImageHashingTest
 {
@@ -136,7 +137,7 @@ namespace ImageHashingTest
                     cmd.Parameters.AddWithValue("master_listing_id", image.MlId);
                     cmd.Parameters.AddWithValue("listing_id", image.ListingId);
                     cmd.Parameters.AddWithValue("image_url", ((object)image.ImageUrl) ?? DBNull.Value);
-                    cmd.Parameters.AddWithValue("image_hash", (decimal) image.ImageHash);
+                    cmd.Parameters.AddWithValue("image_hash", (decimal)image.ImageHash);
                     cmd.Parameters.AddWithValue("address_line", ((object)image.AddressLine) ?? DBNull.Value);
 
                     cmd.Parameters.AddWithValue("street_number", ((object)image.StreetNumber) ?? DBNull.Value);
@@ -157,6 +158,95 @@ namespace ImageHashingTest
             {
                 throw;
             }
+        }
+
+        public List<PhotoIssue> QueryForSharedImagesHashes(string stateCode, int zip, int minDuplicates, string whereClause)
+        {
+            var result = new List<PhotoIssue>();
+
+            var sqlTemplate = @"select 
+                            image_hash as ImageHash, 
+                            count(*) as NumListingsSharingImage
+                        from [MasterPropertyRecord].[dbo].[zzz_hackathon_0115_image_hashes_try2] 
+                        where image_hash in 
+                        (
+	                        select a1.image_hash
+	                        from [MasterPropertyRecord].[dbo].[zzz_hackathon_0115_image_hashes_try2] a1
+	                        join [MasterPropertyRecord].[dbo].[zzz_hackathon_0115_image_hashes_try2] a2 on a1.image_hash = a2.image_hash
+	                        where a1.mpr_id <> a2.mpr_id 
+	                              and a1.zip = @zipcode
+                                  {0}
+                        ) 
+                        group by image_hash 
+                        having count(*) > 2
+                        order by count(*) desc";
+
+            var sql = string.Format(sqlTemplate, string.IsNullOrEmpty(whereClause) ? "" : "and " + whereClause);
+            string connectionString = _mprRedirect.GetConnectionStringByStateCode(stateCode, "MasterPropertyRecord");
+            using (var dbConnection = new SqlConnection(connectionString))
+            {
+                dbConnection.Open();
+                var items = dbConnection.Query<PhotoIssue>(sql, new { zipcode = zip }, commandTimeout: 9800);
+                foreach (var item in items)
+                {
+                    item.StateCode = stateCode;
+                    item.Zip = zip;
+                    result.Add(item);
+                }
+            }
+
+            return result;
+        }
+
+
+        internal List<ListingImage> GetListingsSharingImageHash(string stateCode, ulong sharedHash)
+        {
+            var result = new List<ListingImage>();
+
+            var sql = @"select 
+                            mpr_id as MprId,
+                            master_listing_id as MlId,
+                            listing_id as ListingId,
+                            image_url as ImageUrl,
+                            image_hash as ImageHash,
+                            address_line as AddressLine,
+                            city as City,
+                            state as State,
+                            zip as Zip
+                        from [MasterPropertyRecord].[dbo].[zzz_hackathon_0115_image_hashes_try2]
+                        where image_hash = @imageHash";
+
+            string connectionString = _mprRedirect.GetConnectionStringByStateCode(stateCode, "MasterPropertyRecord");
+            using (var dbConnection = new SqlConnection(connectionString))
+            {
+                dbConnection.Open();
+                var items = dbConnection.Query<ListingImage>(sql, new { imageHash = (decimal)sharedHash }, commandTimeout: 9800);
+                foreach (var item in items)
+                    result.Add(item);
+            }
+
+            return result;
+        }
+
+        internal List<string> GetAllImagesForListing(int listingId, string stateCode)
+        {
+            var result = new List<string>();
+
+            var sql = @"select image_url
+                        from [MasterPropertyRecord].[dbo].[zzz_hackathon_0115_image_hashes_try2]
+                        where listing_id = @listingID
+                              and state = @state";
+
+            string connectionString = _mprRedirect.GetConnectionStringByStateCode(stateCode, "MasterPropertyRecord");
+            using (var dbConnection = new SqlConnection(connectionString))
+            {
+                dbConnection.Open();
+                var items = dbConnection.Query<string>(sql, new { listingID = listingId, state = stateCode }, commandTimeout: 9800);
+                foreach (var item in items)
+                    result.Add(item);
+            }
+
+            return result;
         }
     }
 }

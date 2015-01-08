@@ -10,6 +10,8 @@ namespace ServiceSupport
     {
         public ulong ImageHash;
         public int NumListingsSharingImage;
+        public int Zip;
+        public string StateCode;
         public List<ListingImage> ListingsSharingImage;
     }
 }

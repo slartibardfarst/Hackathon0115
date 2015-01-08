@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using ImageHashing;
+using SDS.Providers.MPRRouter;
+using ServiceSupport;
 
 namespace ImageHashingTest
 {
@@ -16,13 +19,15 @@ namespace ImageHashingTest
         static void Main(string[] args)
         {
             //Testit();
+            TestServiceSupport();
 
-            var hashGenerator = new ImageHashGenerator();
-            hashGenerator.Go();
+            //var hashGenerator = new ImageHashGenerator();
+            //hashGenerator.Go();
 
-            Console.WriteLine("Enter to Exit");
-            Console.ReadLine();
+            //Console.WriteLine("Enter to Exit");
+            //Console.ReadLine();
         }
+
 
         private static void Testit()
         {
@@ -55,5 +60,21 @@ namespace ImageHashingTest
             var bb = ImageHashing.ImageHashing.AverageHash(uriB);
             var diff = ImageHashing.ImageHashing.Similarity(uriA, uriB);
         }
+
+        private static void TestServiceSupport()
+        {
+            MPRRedirect mprRedirect = new MPRRedirect(ConfigurationManager.ConnectionStrings["DestDB"].ConnectionString);
+
+            var imageHashRepo = new SqlRepository(mprRedirect);
+            var serviceUtils = new ServiceUtils(imageHashRepo);
+            var issues = serviceUtils.GetPhotoIssuesForZip("NY", 11215);
+
+            var issuesJson = serviceUtils.GetPhotoIssuesForZipAsJsonString("NY", 11215);
+
+
+            for (int i = 0; i < 10; i++)
+                serviceUtils.GetPhotoIssueDetails(issues[i]);
+        }
+
     }
 }

@@ -12,6 +12,11 @@ namespace ServiceSupport
         public ulong MlId;
         public int ListingId;
         public string ImageUrl;
-        public List<ListingImage> OtherListingsSharingImage;
+        public ulong ImageHash;
+        public string AddressLine;
+        public string City;
+        public string State;
+        public string Zip;
+        public List<string> OtherListingImages;
     }
 }
