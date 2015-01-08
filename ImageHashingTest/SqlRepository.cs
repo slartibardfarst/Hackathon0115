@@ -29,6 +29,12 @@ namespace ImageHashingTest
 	                            lm.listing_id as ListingId, 
 	                            lm.file_url as ImageUrl,
 	                            lda.address_line AddressLine,
+	                            lda.street_number as StreetNumber,
+	                            lda.street_direction as StreetDirection,
+	                            lda.street_name as StreetName,
+	                            lda.street_suffix as StreetSuffix,
+	                            lda.street_post_dir as StreetPostDirection,
+	                            lda.unit_value as UnitValue,
 	                            lda.city as City, 
 	                            lda.state_code as State, 
 	                            lda.zip as Zip
@@ -64,12 +70,18 @@ namespace ImageHashingTest
 	                                                    [image_url]		    = @image_url,
 	                                                    [image_hash]	    = @image_hash,
 	                                                    [address_line]	    = @address_line,
+                                                        [street_number]     = @street_number,
+                                                        [street_direction]  = @street_direction,
+                                                        [street_name]       = @street_name,
+                                                        [street_suffix]     = @street_suffix,
+                                                        [street_post_direction]   = @street_post_direction,
+                                                        [unit_value]        = @unit_value,
 	                                                    [city]              = @city,
 	                                                    [state]		        = @state,
 	                                                    [zip]			    = @zip
-                                               WHERE listing_id         = @listing_id AND
-                                                     state              = @state AND
-                                                     image_url          = @image_url
+                                               WHERE listing_id = @listing_id AND
+                                                     state      = @state AND
+                                                     image_url  = @image_url
                                                IF @@ROWCOUNT = 0
                                                BEGIN
                                                   INSERT INTO {0}
@@ -80,6 +92,12 @@ namespace ImageHashingTest
 	                                                    [image_url]		   ,
 	                                                    [image_hash]	   ,
 	                                                    [address_line]	   ,
+                                                        [street_number]    ,
+                                                        [street_direction] ,
+                                                        [street_name]      ,
+                                                        [street_suffix]    ,
+                                                        [street_post_direction]  ,
+                                                        [unit_value]       ,
 	                                                    [city]             ,
 	                                                    [state]		       ,
 	                                                    [zip]			   
@@ -92,6 +110,12 @@ namespace ImageHashingTest
 	                                                    @image_url,
 	                                                    @image_hash,
 	                                                    @address_line,
+                                                        @street_number,
+                                                        @street_direction,
+                                                        @street_name,
+                                                        @street_suffix,
+                                                        @street_post_direction,
+                                                        @unit_value,
 	                                                    @city,
 	                                                    @state,
 	                                                    @zip
@@ -114,6 +138,14 @@ namespace ImageHashingTest
                     cmd.Parameters.AddWithValue("image_url", ((object)image.ImageUrl) ?? DBNull.Value);
                     cmd.Parameters.AddWithValue("image_hash", (decimal) image.ImageHash);
                     cmd.Parameters.AddWithValue("address_line", ((object)image.AddressLine) ?? DBNull.Value);
+
+                    cmd.Parameters.AddWithValue("street_number", ((object)image.StreetNumber) ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("street_direction", ((object)image.StreetDirection) ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("street_name", ((object)image.StreetName) ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("street_suffix", ((object)image.StreetSuffix) ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("street_post_direction", ((object)image.StreetPostDirection) ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("unit_value", ((object)image.UnitValue) ?? DBNull.Value);
+
                     cmd.Parameters.AddWithValue("city", ((object)image.City) ?? DBNull.Value);
                     cmd.Parameters.AddWithValue("state", ((object)image.State) ?? DBNull.Value);
                     cmd.Parameters.AddWithValue("zip", ((object)image.Zip) ?? DBNull.Value);

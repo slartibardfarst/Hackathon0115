@@ -12,6 +12,12 @@ namespace ImageHashingTest
         public int ListingId;
         public string ImageUrl;
         public string AddressLine;
+        public string StreetNumber;
+        public string StreetDirection;
+        public string StreetName;
+        public string StreetSuffix;
+        public string StreetPostDirection;
+        public string UnitValue;
         public string City;
         public string State;
         public string Zip;

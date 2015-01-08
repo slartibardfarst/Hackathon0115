@@ -99,7 +99,8 @@ namespace ImageHashingTest
 
                 imageDetails.ImageUrl = originalImageUrl;
                 imageDetails.ImageHash = GetHashFromUrl(originalImageUrl);
-                _dataDestRepo.UpsertListingImageDetails(3, "[MasterPropertyRecord].[dbo].[zzz_hackathon_0115_image_hashes]", imageDetails);
+                //_dataDestRepo.UpsertListingImageDetails(3, "[MasterPropertyRecord].[dbo].[zzz_hackathon_0115_image_hashes]", imageDetails);
+                _dataDestRepo.UpsertListingImageDetails(3, "[MasterPropertyRecord].[dbo].[zzz_hackathon_0115_image_hashes_try2]", imageDetails);
             }
             catch (Exception ex)
             {
