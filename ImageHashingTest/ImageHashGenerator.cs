@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using SDS.Providers.MPRRouter;
 
 namespace ImageHashingTest
@@ -30,14 +32,62 @@ namespace ImageHashingTest
         {
             int count = 0;
 
-            var listingImages = _dataSourceRepo.QueryListingImages(3, 10000, null, "WHERE l.state_code = 'NY' AND l.listing_status_id = 6 and l.zip = '11215'");
+            int bufferSize = int.Parse(ConfigurationManager.AppSettings["MessageBufferSize"]);
+            var messageQueue = new BlockingCollection<ListingImageDetails>(bufferSize);
+            var tasks = StartProcessingThreads(messageQueue);
+
+            //var listingImages = _dataSourceRepo.QueryListingImages(3, 100000, null, "WHERE l.state_code = 'NY' AND l.listing_status_id = 6 and l.zip = '11215'");
+            var listingImages = _dataSourceRepo.QueryListingImages(3, 100000, null, "WHERE l.state_code = 'NY' AND l.listing_status_id = 6");
             foreach (var image in listingImages)
             {
-                LogImageHashToDatabase(image);
+                //LogImageHashToDatabase(image);
+                messageQueue.Add(image);
 
                 count++;
                 if (count % 100 == 0) Console.Write(".");
                 if (count % 1000 == 0) Console.WriteLine();
+            }
+
+            messageQueue.CompleteAdding();
+            Task.WaitAll(tasks);
+
+        }
+
+
+        private Task[] StartProcessingThreads(BlockingCollection<ListingImageDetails> imagesQueue)
+        {
+            List<Task> tasksList = new List<Task>();
+
+            int numTasks = int.Parse(ConfigurationManager.AppSettings["NumProcessingThreads"]);
+            for (int i = 0; i < numTasks; i++)
+                tasksList.Add(Task.Factory.StartNew(ProcessImagesTaskProc, new object[] { (object)imagesQueue }));
+
+            return tasksList.ToArray();
+        }
+
+        private void ProcessImagesTaskProc(object obj)
+        {
+            bool keepProcessing = true;
+
+            object[] paramsArray = (object[])obj;
+            var messageQueue = (BlockingCollection<ListingImageDetails>)paramsArray[0];
+
+            while (keepProcessing)
+            {
+                try
+                {
+                    var imageDetails = messageQueue.Take();
+                    LogImageHashToDatabase(imageDetails);
+                }
+                catch (InvalidOperationException)
+                {
+                    // An InvalidOperationException means that Take() was called on a completed collection
+                    keepProcessing = false;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Ignoring unexpected exception in ProcessListings: {0}", ex.Message);
+                }
             }
         }
 

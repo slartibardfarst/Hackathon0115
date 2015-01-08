@@ -19,6 +19,9 @@ namespace ImageHashingTest
 
             var hashGenerator = new ImageHashGenerator();
             hashGenerator.Go();
+
+            Console.WriteLine("Enter to Exit");
+            Console.ReadLine();
         }
 
         private static void Testit()
