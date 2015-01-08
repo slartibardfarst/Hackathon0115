@@ -3,7 +3,7 @@
     Page.Title = "Home Page";
 }
 
-@section featured {
+@*@section featured {
 <section class="featured">
     <div class="content-wrapper">
         <hgroup class="title">
@@ -19,9 +19,9 @@
         </p>
     </div>
 </section>
-}
+}*@
 
-<h3>We suggest the following:</h3>
+@*<h3>We suggest the following:</h3>
 
 <ol class="round">
     <li class="one">
@@ -43,4 +43,40 @@
         You can easily find a web hosting company that offers the right mix of features and price for your applications.
         <a href="http://go.microsoft.com/fwlink/?LinkId=245143">Learn more…</a>
     </li>
-</ol>
+</ol>*@
+<div>
+    
+</div>
+<canvas id="myCanvas" width="578" height="400"></canvas>
+<script>
+      function loadImages(sources, callback) {
+          var images = {};
+          var loadedImages = 0;
+          var numImages = 0;
+          // get num of sources
+          for(var src in sources) {
+              numImages++;
+          }
+          for(var src in sources) {
+              images[src] = new Image();
+              images[src].onload = function() {
+                  if(++loadedImages >= numImages) {
+                      callback(images);
+                  }
+              };
+              images[src].src = sources[src];
+          }
+      }
+    var canvas = document.getElementById('myCanvas');
+    var context = canvas.getContext('2d');
+
+    var sources = {
+        darthVader: 'http://r.rdcpix.com/v01/l5cc10655-r5O.jpg',
+        yoda: 'http://r.rdcpix.com/v01/l5cc10655-r7O.jpg'
+    };
+
+    loadImages(sources, function(images) {
+        context.drawImage(images.darthVader,0,0);
+        context.drawImage(images.yoda, 100, 0);
+    });
+</script>
