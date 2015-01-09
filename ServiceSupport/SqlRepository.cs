@@ -199,7 +199,7 @@ namespace ImageHashingTest
         }
 
 
-        internal List<ListingImage> GetListingsSharingImageHash(string stateCode, ulong sharedHash)
+        public List<ListingImage> GetListingsSharingImageHash(string stateCode, ulong sharedHash)
         {
             var result = new List<ListingImage>();
 
@@ -232,7 +232,7 @@ namespace ImageHashingTest
 
 
 
-        internal List<string> GetAllImagesForListing(int listingId, string stateCode)
+        public List<string> GetAllImagesForListing(int listingId, string stateCode)
         {
             var result = new List<string>();
 
@@ -251,6 +251,23 @@ namespace ImageHashingTest
             }
 
             return result;
+        }
+
+        public string QueryForFirstUrlGivenHash(string stateCode, ulong imageHash)
+        {
+            var sql = @"select top 1 image_url
+                        from [MasterPropertyRecord].[dbo].[zzz_hackathon_0115_image_hashes_try2]
+                        where image_hash = @image_hash";
+
+            string connectionString = _mprRedirect.GetConnectionStringByStateCode(stateCode, "MasterPropertyRecord");
+            using (var dbConnection = new SqlConnection(connectionString))
+            {
+                dbConnection.Open();
+                var result = dbConnection.Query<string>(sql, new {image_hash = (decimal) imageHash}, commandTimeout: 9800).FirstOrDefault();
+                return result;
+            }
+
+            return null;
         }
     }
 }

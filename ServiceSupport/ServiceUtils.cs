@@ -23,9 +23,18 @@ namespace ServiceSupport
         public List<PhotoIssue> GetPhotoIssuesForZip(string stateCode, int zip)
         {
             List<PhotoIssue> imageHashesSharedByMultipleListings = _imageHashRepo.QueryForSharedImagesHashes(stateCode, zip, 2, "");
+            if ((null != imageHashesSharedByMultipleListings) && (imageHashesSharedByMultipleListings.Count > 0))
+            {
+                foreach (var issue in imageHashesSharedByMultipleListings)
+                {
+                    var origUrl = _imageHashRepo.QueryForFirstUrlGivenHash(stateCode, issue.ImageHash);
+                    issue.ThumbnailUrl = Regex.Replace(origUrl, @"^(.*)(\w)(.jpg)$", "$1s$3");
+                }
+            }
 
             return imageHashesSharedByMultipleListings;
         }
+
 
         public PhotoIssue PopulatePhotoIssueDetails(PhotoIssue issue, bool getOtherPhotosForListing = false)
         {
@@ -40,18 +49,6 @@ namespace ServiceSupport
             }
 
             issue.ListingsSharingImage = listingsSharingImage;
-
-            if ((null != issue.ListingsSharingImage) && (issue.ListingsSharingImage.Count > 0))
-            {
-                try
-                {
-                    issue.ThumbnailUrl = Regex.Replace(issue.ListingsSharingImage[0].ImageUrl, @"^(.*)(\w)(.jpg)$", "$1s$3");
-                }
-                catch (Exception)
-                {
-                    issue.ThumbnailUrl = null;
-                }
-            }
 
             return issue;
         }
