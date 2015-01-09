@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml;
 using ImageHashingTest;
@@ -39,6 +40,18 @@ namespace ServiceSupport
             }
 
             issue.ListingsSharingImage = listingsSharingImage;
+
+            if ((null != issue.ListingsSharingImage) && (issue.ListingsSharingImage.Count > 0))
+            {
+                try
+                {
+                    issue.ThumbnailUrl = Regex.Replace(issue.ListingsSharingImage[0].ImageUrl, @"^(.*)(\w)(.jpg)$", "$1s$3");
+                }
+                catch (Exception)
+                {
+                    issue.ThumbnailUrl = null;
+                }
+            }
 
             return issue;
         }

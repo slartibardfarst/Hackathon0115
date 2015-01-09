@@ -12,6 +12,7 @@ namespace ServiceSupport
         public int NumListingsSharingImage;
         public int Zip;
         public string StateCode;
+        public string ThumbnailUrl;
         public List<ListingImage> ListingsSharingImage;
     }
 }
