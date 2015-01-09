@@ -228,6 +228,10 @@ namespace ImageHashingTest
             return result;
         }
 
+
+
+
+
         internal List<string> GetAllImagesForListing(int listingId, string stateCode)
         {
             var result = new List<string>();

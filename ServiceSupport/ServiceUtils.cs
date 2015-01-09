@@ -26,14 +26,16 @@ namespace ServiceSupport
             return imageHashesSharedByMultipleListings;
         }
 
-        public PhotoIssue GetPhotoIssueDetails(PhotoIssue issue)
+        public PhotoIssue PopulatePhotoIssueDetails(PhotoIssue issue, bool getOtherPhotosForListing = false)
         {
-            var result = new List<PhotoIssue>();
-
             List<ListingImage> listingsSharingImage = _imageHashRepo.GetListingsSharingImageHash(issue.StateCode, issue.ImageHash);
-            foreach (var listing in listingsSharingImage)
+
+            if (getOtherPhotosForListing)
             {
-                listing.OtherListingImages = _imageHashRepo.GetAllImagesForListing(listing.ListingId, issue.StateCode);
+                foreach (var listing in listingsSharingImage)
+                {
+                    listing.OtherListingImages = _imageHashRepo.GetAllImagesForListing(listing.ListingId, issue.StateCode);
+                }
             }
 
             issue.ListingsSharingImage = listingsSharingImage;
@@ -41,14 +43,10 @@ namespace ServiceSupport
             return issue;
         }
 
-
-        public string GetPhotoIssuesForZipAsJsonString(string stateCode, int zip)
+        public ListingImage PopulateOtherImagesForListing(ListingImage listingImage, string stateCode)
         {
-            var obj = GetPhotoIssuesForZip(stateCode, zip);
-            var result = JsonConvert.SerializeObject(obj);
-            return result;
+            listingImage.OtherListingImages = _imageHashRepo.GetAllImagesForListing(listingImage.ListingId, stateCode);
+            return listingImage;
         }
-
-
     }
 }

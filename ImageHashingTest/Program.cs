@@ -69,11 +69,10 @@ namespace ImageHashingTest
             var serviceUtils = new ServiceUtils(imageHashRepo);
             var issues = serviceUtils.GetPhotoIssuesForZip("NY", 11215);
 
-            var issuesJson = serviceUtils.GetPhotoIssuesForZipAsJsonString("NY", 11215);
-
+            int ii = 1;
 
             for (int i = 0; i < 10; i++)
-                serviceUtils.GetPhotoIssueDetails(issues[i]);
+                serviceUtils.PopulatePhotoIssueDetails(issues[i], false);
         }
 
     }
