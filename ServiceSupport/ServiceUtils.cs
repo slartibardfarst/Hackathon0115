@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -25,10 +26,14 @@ namespace ServiceSupport
             List<PhotoIssue> imageHashesSharedByMultipleListings = _imageHashRepo.QueryForSharedImagesHashes(stateCode, zip, 2, "");
             if ((null != imageHashesSharedByMultipleListings) && (imageHashesSharedByMultipleListings.Count > 0))
             {
+                var hashes = imageHashesSharedByMultipleListings.Select(i => i.ImageHash).ToArray();
+                Dictionary<ulong, string> hashUrls = _imageHashRepo.QueryForFirstUrlGivenHashes(stateCode, hashes);
+
                 foreach (var issue in imageHashesSharedByMultipleListings)
                 {
-                    var origUrl = _imageHashRepo.QueryForFirstUrlGivenHash(stateCode, issue.ImageHash);
-                    issue.ThumbnailUrl = Regex.Replace(origUrl, @"^(.*)(\w)(.jpg)$", "$1s$3");
+                    string val;
+                    if (hashUrls.TryGetValue(issue.ImageHash, out val))
+                        issue.ThumbnailUrl = val;
                 }
             }
 

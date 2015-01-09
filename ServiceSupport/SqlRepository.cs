@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using Dapper;
 using SDS.Providers.MPRRouter;
 using ServiceSupport;
@@ -253,21 +254,33 @@ namespace ImageHashingTest
             return result;
         }
 
-        public string QueryForFirstUrlGivenHash(string stateCode, ulong imageHash)
+        public Dictionary<ulong,string> QueryForFirstUrlGivenHashes(string stateCode, ulong[] hashes)
         {
-            var sql = @"select top 1 image_url
-                        from [MasterPropertyRecord].[dbo].[zzz_hackathon_0115_image_hashes_try2]
-                        where image_hash = @image_hash";
+            var result = new Dictionary<ulong, string>();
 
+            var sqlTemplate = @"select image_hash, image_url
+                        from [MasterPropertyRecord].[dbo].[zzz_hackathon_0115_image_hashes_try2]
+                        where image_hash in ({0})";
+
+            string sql = string.Format(sqlTemplate, string.Join(",", hashes));
             string connectionString = _mprRedirect.GetConnectionStringByStateCode(stateCode, "MasterPropertyRecord");
             using (var dbConnection = new SqlConnection(connectionString))
             {
                 dbConnection.Open();
-                var result = dbConnection.Query<string>(sql, new {image_hash = (decimal) imageHash}, commandTimeout: 9800).FirstOrDefault();
-                return result;
+                var items = dbConnection.Query<HashUrlPair>(sql, commandTimeout: 9800);
+                foreach (var item in items)
+                {
+                    result[(ulong)item.image_hash] = Regex.Replace(item.image_url, @"^(.*)(\w)(.jpg)$", "$1s$3");
+                }
             }
 
-            return null;
+            return result;
         }
+    }
+
+    class HashUrlPair
+    {
+        public decimal image_hash;
+        public string image_url;
     }
 }
