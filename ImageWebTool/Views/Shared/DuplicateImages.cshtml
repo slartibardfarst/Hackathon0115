@@ -26,11 +26,13 @@
                 <p>@listing.City, @listing.State, @listing.Zip</p>
                     @{
                         var rdc_url = string.Format("http://www.realtor.com/realestateandhomes-detail/M{0}", @listing.MprId);
-                        <p><a href="@rdc_url" target="_blank">View in Realtor.com</a></p>
-                     }
+                        var modal_id = string.Format("myModal{0}", @listing.MlId);
+                        @*<p><a href="@rdc_url" target="_blank">View on Realtor.com</a></p>*@
+                        @*<p><a href="#" onclick="viewInModal('@rdc_url',@listing.MlId)">Modal</a></p>*@
+                    }
             </div>
             <div class="panel-footer">
-                <small>@listing.ImageHash</small>
+                <small><a href="@rdc_url" target="_blank">View on Realtor.com</a></small>
             </div>
         </div>
     }

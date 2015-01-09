@@ -19,7 +19,7 @@
                             <a href="#" class="thumbnail">
                                 <img src="@ViewBag.Issues[i].ThumbnailUrl" style="min-height:80px;height:80px;" />
                             </a>
-                            <span class="badge">@ViewBag.Issues[i].NumListingsSharingImage</span>
+                            <span class="badge">@ViewBag.Issues[i].NumListingsSharingImage listings</span>
                             <a href="#" class="btnShow" id="@i" onclick="showDuplicates(@i)">Compare</a>
                         </li>
                     }
@@ -51,4 +51,14 @@
     function hideDuplicate(ml_id) {
         $("#" + ml_id).hide();
     }
+
+    function viewInModal(url) {
+        var $iframe = $('#iframe');
+        if ($iframe.length) {
+            $iframe.attr('src', url);
+            return false;
+        }
+        return true;
+    }
+
 </script>
