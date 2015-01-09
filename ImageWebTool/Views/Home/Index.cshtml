@@ -1,4 +1,6 @@
-﻿@using System.Web.UI.WebControls
+﻿@using System.Text.RegularExpressions
+@using System.Web.UI.WebControls
+@using ServiceSupport
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     Page.Title = "Home Page";
@@ -6,72 +8,43 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-md-2">
+        <div class="col-md-3">
             <!--Sidebar content-->
-            <ul class="list-group">
+            <ul class="list-group" style="max-height: 800px; overflow-y:scroll;">
                 @{
                     for (int i = 0; i < @ViewBag.Issues.Count; i++)
                     {
                         <li class="list-group-item">
+                            <span class="label label-default">@ViewBag.Issues[i].ImageHash</span>
+                            <a href="#" class="thumbnail">
+                                <img src="http://r.rdcpix.com/v01/l5cc10655-r5O.jpg" />
+                            </a>
                             <span class="badge">@ViewBag.Issues[i].NumListingsSharingImage</span>
-                            @Html.ActionLink(string.Format("Issue {0}",i), "ShowDuplicateImages", "Home", new { index = i }, null)
+                            <a href="#" class="btnShow" id="@i" onclick="showDuplicates(@i)">View @i</a>
                         </li>
                     }
                 }
             </ul>
         </div>
-        <div class="col-md-10">
+        <div class="col-md-9">
             <!--Body content-->
-            
-            <div id="mylist"></div>
-            <div class="panel panel-default">
-                <div class="panel-heading clearfix">
-                    <h3 class="panel-title pull-left">Card Title</h3>
-                    <a class="btn btn-default pull-right" href="#">
-                        <i class="fa fa-check"></i>
-                        Button
-                    </a>
-                </div>
-                <div class="panel-body">
-                    <p>Card content...</p>
-                </div>
-                <div class="panel-footer">
-                    <small>Card footer...</small>
-                </div>
-            </div>                               
-
+            <div id="target"></div>
         </div>
     </div>
 </div>
-<script>
-      function loadImages(sources, callback) {
-          var images = {};
-          var loadedImages = 0;
-          var numImages = 0;
-          // get num of sources
-          for(var src in sources) {
-              numImages++;
-          }
-          for(var src in sources) {
-              images[src] = new Image();
-              images[src].onload = function() {
-                  if(++loadedImages >= numImages) {
-                      callback(images);
-                  }
-              };
-              images[src].src = sources[src];
-          }
-      }
-    var canvas = document.getElementById('myCanvas');
-    var context = canvas.getContext('2d');
-
-    var sources = {
-        darthVader: 'http://r.rdcpix.com/v01/l5cc10655-r5O.jpg',
-        yoda: 'http://r.rdcpix.com/v01/l5cc10655-r7O.jpg'
-    };
-
-    loadImages(sources, function(images) {
-        context.drawImage(images.darthVader,0,0);
-        context.drawImage(images.yoda, 100, 0);
-    });
+<script type="text/javascript">
+    
+    function showDuplicates(index) {
+        $.ajax(
+            {
+                type: "POST",
+                url: "@Url.Action("ShowDuplicateImages","Home")",
+                data: "index="+index,
+                success: function (result) {
+                    $("#target").empty();
+                    $("#target").html(result);
+                }
+            }
+        );        
+    }
 </script>

@@ -29,9 +29,9 @@ namespace ImageWebTool.Controllers
 
         public ActionResult ShowDuplicateImages(int index)
         {
-            var photoIssue = serviceUtils.GetPhotoIssueDetails(issues[index]);
-
-            return null;
+            var photoIssue = serviceUtils.PopulatePhotoIssueDetails(issues[index]);
+            
+            return PartialView("DuplicateImages", photoIssue);
         }
 
     }
