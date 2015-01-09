@@ -17,10 +17,10 @@
                         <li class="list-group-item">
                             <span class="label label-default">@ViewBag.Issues[i].ImageHash</span>
                             <a href="#" class="thumbnail">
-                                <img src="http://r.rdcpix.com/v01/l5cc10655-r5O.jpg" />
+                                <img src="@ViewBag.Issues[i].ThumbnailUrl" style="min-height:80px;height:80px;" />
                             </a>
                             <span class="badge">@ViewBag.Issues[i].NumListingsSharingImage</span>
-                            <a href="#" class="btnShow" id="@i" onclick="showDuplicates(@i)">View @i</a>
+                            <a href="#" class="btnShow" id="@i" onclick="showDuplicates(@i)">Compare</a>
                         </li>
                     }
                 }
@@ -45,6 +45,10 @@
                     $("#target").html(result);
                 }
             }
-        );        
+        );
+    }
+
+    function hideDuplicate(ml_id) {
+        $("#" + ml_id).hide();
     }
 </script>

@@ -32,6 +32,8 @@ namespace ServiceSupport
                 }
             }
 
+            imageHashesSharedByMultipleListings.Reverse();
+
             return imageHashesSharedByMultipleListings;
         }
 

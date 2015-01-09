@@ -1,55 +1,35 @@
-﻿@using ServiceSupport
+﻿@using System.Activities.Debugger
+@using ServiceSupport
 @model ServiceSupport.PhotoIssue
 
 @{
     foreach (var listing in @Model.ListingsSharingImage)
     {
-        <div class="panel panel-default">
+        <div class="panel panel-default" id="@listing.MlId">
             <div class="panel-heading clearfix">
-                <h3 class="panel-title pull-left">MPR ID: @listing.MprId</h3>
-                <a class="btn btn-default pull-right" href="#">
+                <h3 class="panel-title pull-left" style="font-weight: bold; font-size: x-large;">
+                    @listing.AddressLine, @listing.City, @listing.State, @listing.Zip
+                </h3>
+
+                <a class="btn btn-default pull-right" href="#" onclick="hideDuplicate(@listing.MlId)">
                     <i class="fa fa-check"></i>
                     Hide
                 </a>
             </div>
             <div class="panel-body">
-                <a href="#" class="pull-right">
-                    <img src="@listing.ImageUrl"></img>
-                </a>                
-                <p>Master Listing Id: @listing.MlId</p>
+                <a href="#" class="thumbnail pull-right">
+                    <img src="@listing.ImageUrl" style="min-height:200px;height:200px;"></img>
+                </a>
+                <p>Property Id: @listing.MprId</p>
+                <p>Listing Id: @listing.MlId</p>
                 <p>@listing.AddressLine</p>
                 <p>@listing.City, @listing.State, @listing.Zip</p>
+                    @{
+                        var rdc_url = string.Format("http://www.realtor.com/realestateandhomes-detail/M{0}", @listing.MprId);
+                        <p><a href="@rdc_url" target="_blank">View in Realtor.com</a></p>
+                     }
             </div>
             <div class="panel-footer">
-                @*if (@listing.OtherListingImages != null)
-                {
-                    <div class="well">
-                        <div id="myCarousel" class="carousel slide">
-                            <!-- Carousel items -->
-                            <div class="carousel-inner">
-                                <div class="item active">
-                                    <div class="row">
-                                        @{
-                                            foreach (var image in @listing.OtherListingImages)
-                                            {
-                                                <div class="col-xs-3">
-                                                    <a href="#x"><img src="@image/100x100" alt="Image" class="img-responsive"></a>
-                                                </div>
-                                            }
-                                        }
-                                    </div>
-                                    <!--/row-->
-                                </div>
-                                <!--/item-->
-                            </div>
-                            <!--/carousel-inner--> <a class="left carousel-control" href="#myCarousel" data-slide="prev">‹</a>
-
-                            <a class="right carousel-control" href="#myCarousel" data-slide="next">›</a>
-                        </div>
-                        <!--/myCarousel-->
-                    </div>
-                    <!--/well-->
-                }*@                           
                 <small>@listing.ImageHash</small>
             </div>
         </div>

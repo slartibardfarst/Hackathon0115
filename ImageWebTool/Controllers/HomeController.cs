@@ -34,5 +34,12 @@ namespace ImageWebTool.Controllers
             return PartialView("DuplicateImages", photoIssue);
         }
 
+        public ActionResult ShowOtherImages(ListingImage image, string stateCode)
+        {
+            var listingImage = serviceUtils.PopulateOtherImagesForListing(image, stateCode);
+
+            return PartialView("OtherImages", listingImage);
+        }
+
     }
 }
