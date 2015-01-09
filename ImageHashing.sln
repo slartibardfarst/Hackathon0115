@@ -9,27 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageHashingTest", "ImageHa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceSupport", "ServiceSupport\ServiceSupport.csproj", "{A7E14E2B-69D2-499B-A60C-57644B8A3800}"
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "ImageHashingWeb", "http://localhost:14515", "{8B04887F-C278-421B-BE81-28887F6A7112}"
-	ProjectSection(WebsiteProperties) = preProject
-		UseIISExpress = "true"
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.5"
-		Debug.AspNetCompiler.VirtualPath = "/localhost_14515"
-		Debug.AspNetCompiler.PhysicalPath = "ImageHashingWeb\"
-		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_14515\"
-		Debug.AspNetCompiler.Updateable = "true"
-		Debug.AspNetCompiler.ForceOverwrite = "true"
-		Debug.AspNetCompiler.FixedNames = "false"
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.VirtualPath = "/localhost_14515"
-		Release.AspNetCompiler.PhysicalPath = "ImageHashingWeb\"
-		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_14515\"
-		Release.AspNetCompiler.Updateable = "true"
-		Release.AspNetCompiler.ForceOverwrite = "true"
-		Release.AspNetCompiler.FixedNames = "false"
-		Release.AspNetCompiler.Debug = "False"
-		SlnRelativePath = "ImageHashingWeb\"
-		DefaultWebSiteLanguage = "Visual C#"
-	EndProjectSection
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageWebTool", "ImageWebTool\ImageWebTool.csproj", "{84FCFAAF-D24D-4D17-8A8A-16A41EFEAD4B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,16 +51,16 @@ Global
 		{A7E14E2B-69D2-499B-A60C-57644B8A3800}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{A7E14E2B-69D2-499B-A60C-57644B8A3800}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{A7E14E2B-69D2-499B-A60C-57644B8A3800}.Release|x86.ActiveCfg = Release|Any CPU
-		{8B04887F-C278-421B-BE81-28887F6A7112}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8B04887F-C278-421B-BE81-28887F6A7112}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8B04887F-C278-421B-BE81-28887F6A7112}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{8B04887F-C278-421B-BE81-28887F6A7112}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{8B04887F-C278-421B-BE81-28887F6A7112}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{8B04887F-C278-421B-BE81-28887F6A7112}.Release|Any CPU.ActiveCfg = Debug|Any CPU
-		{8B04887F-C278-421B-BE81-28887F6A7112}.Release|Any CPU.Build.0 = Debug|Any CPU
-		{8B04887F-C278-421B-BE81-28887F6A7112}.Release|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{8B04887F-C278-421B-BE81-28887F6A7112}.Release|Mixed Platforms.Build.0 = Debug|Any CPU
-		{8B04887F-C278-421B-BE81-28887F6A7112}.Release|x86.ActiveCfg = Debug|Any CPU
+		{84FCFAAF-D24D-4D17-8A8A-16A41EFEAD4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84FCFAAF-D24D-4D17-8A8A-16A41EFEAD4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84FCFAAF-D24D-4D17-8A8A-16A41EFEAD4B}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{84FCFAAF-D24D-4D17-8A8A-16A41EFEAD4B}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{84FCFAAF-D24D-4D17-8A8A-16A41EFEAD4B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{84FCFAAF-D24D-4D17-8A8A-16A41EFEAD4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84FCFAAF-D24D-4D17-8A8A-16A41EFEAD4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{84FCFAAF-D24D-4D17-8A8A-16A41EFEAD4B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{84FCFAAF-D24D-4D17-8A8A-16A41EFEAD4B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{84FCFAAF-D24D-4D17-8A8A-16A41EFEAD4B}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
